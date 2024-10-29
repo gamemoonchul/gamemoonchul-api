@@ -96,4 +96,4 @@ jobs:
           script: |
             sudo docker pull ${{ secrets.DOCKER_REPOSITORY }}:latest
             chmod +x ~/Documents/gamemuncheol-infra/deploy.sh
-            sudo ~/Documents/gamemuncheol-infra/deploy.sh
+            sudo bash ~/Documents/gamemuncheol-infra/deploy.sh
