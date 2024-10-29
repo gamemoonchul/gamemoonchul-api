@@ -94,6 +94,7 @@ jobs:
           key: ${{ secrets.REMOTE_SSH_KEY }}
           port: ${{ secrets.REMOTE_PORT }}
           script: |
+            cd ~/Documents/gamemuncheol-infra
             sudo docker pull ${{ secrets.DOCKER_REPOSITORY }}:test
-            chmod +x ~/Documents/gamemuncheol-infra/deploy.sh
-            sudo bash ~/Documents/gamemuncheol-infra/deploy.sh
+            chmod +x deploy.sh
+            sudo bash deploy.sh
