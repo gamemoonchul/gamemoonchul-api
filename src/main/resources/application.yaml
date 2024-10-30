@@ -21,7 +21,9 @@ lol:
 
 spring:
   profiles:
-    include: prod
+    include:
+      - prod
+      - perf
   servlet:
     multipart:
       enabled: true
@@ -44,12 +46,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    hikari:
-      maximum-pool-size: 4
-      minimum-idle: 4
-      connection-timeout: 30000 # 30s
-      idle-timeout: 600000 # 10분, 유휴 연결의 최대 유지 시간
-      max-lifetime: 1800000 # 30분, 연결의 최대 수명
 
 
   data:
@@ -87,16 +83,6 @@ spring:
             authorization-uri: https://appleid.apple.com/auth/authorize?response_mode=form_post
             token-uri: https://appleid.apple.com/auth/token
             jwk-set-uri: https://appleid.apple.com/auth/keys
-server:
-  tomcat:
-    threads:
-      max: 150 # 최대 동시 요청수, 기본 200
-      min-spare: 20 # 최소한 유지하는 스레드 수, 기본 10
-    max-connections: 2000
-    #  대기 중인 연결 큐의 최대 크기
-    # 대기열이 꽉 차면 추가 요청은 거절됨 (기본값 100)
-    accept-count: 2000 # 대기 중인 연결 큐의 최대 크기,
-    connection-timeout: 180000 # 3분, 클라이언트 연결 대기 시간
 
 apple:
   clientId: ${APPLE_CLIENT_ID}
