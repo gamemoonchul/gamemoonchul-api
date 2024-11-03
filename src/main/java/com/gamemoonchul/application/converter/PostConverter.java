@@ -28,13 +28,13 @@ public class PostConverter {
         return entity;
     }
 
-    public static RedisPostDetail toCache(Post post) {
+    public static RedisPostDetail toCache(Post post, Long commentCount) {
         return RedisPostDetail.builder()
             .id(post.getId())
             .author(MemberConverter.toResponseDto(post.getMember()))
             .videoUrl(post.getVideoUrl())
             .thumbnailUrl(post.getThumbnailUrl())
-            .commentCount(post.getCommentCount())
+            .commentCount(commentCount)
             .title(post.getTitle())
             .content(post.getContent())
             .timesAgo(StringUtils.getTimeAgo(post.getCreatedAt()))
@@ -96,7 +96,7 @@ public class PostConverter {
         return result;
     }
 
-    public static PostMainPageResponse entityToResponse(Post entity) {
+    public static PostMainPageResponse entityToResponse(Post entity, Integer commentCount) {
         List<Double> voteRatio = List.of(100 - entity.getVoteRatio(), entity.getVoteRatio());
         return PostMainPageResponse.builder()
             .id(entity.getId())
@@ -105,7 +105,7 @@ public class PostConverter {
             .thumbnailUrl(entity.getThumbnailUrl())
             .title(entity.getTitle())
             .content(entity.getContent())
-            .viewCount(entity.getViewCount())
+            .commentCount(commentCount)
             .timesAgo(StringUtils.getTimeAgo(entity.getCreatedAt()))
             .voteRatio(voteRatio)
             .build();

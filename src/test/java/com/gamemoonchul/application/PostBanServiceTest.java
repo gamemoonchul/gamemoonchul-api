@@ -4,6 +4,7 @@ import com.gamemoonchul.TestDataBase;
 import com.gamemoonchul.domain.entity.*;
 import com.gamemoonchul.infrastructure.repository.MemberRepository;
 import com.gamemoonchul.infrastructure.repository.PostRepository;
+import com.gamemoonchul.infrastructure.web.dto.response.PostMainPageResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ class PostBanServiceTest extends TestDataBase {
         postBanService.ban(member2, post.getId());
 
         // then
-        List<PostBan> postBans = postBanService.bannedPost(member2.getId());
+        List<PostMainPageResponse> postBans = postBanService.bannedPostList(member2.getId());
         assertEquals(1, postBans.size());
-        assertThat(postBans.get(0).getBanPost().getTitle()).isEqualTo(post.getTitle());
+        assertThat(postBans.get(0).title()).isEqualTo(post.getTitle());
     }
 }
