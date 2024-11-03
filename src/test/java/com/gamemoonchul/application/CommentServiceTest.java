@@ -1,10 +1,13 @@
 package com.gamemoonchul.application;
 
 import com.gamemoonchul.TestDataBase;
+import com.gamemoonchul.application.post.PostOpenApiService;
+import com.gamemoonchul.application.post.PostService;
 import com.gamemoonchul.common.exception.BadRequestException;
 import com.gamemoonchul.common.exception.NotFoundException;
 import com.gamemoonchul.common.exception.UnauthorizedException;
 import com.gamemoonchul.domain.entity.*;
+import com.gamemoonchul.domain.entity.redis.RedisPostDetail;
 import com.gamemoonchul.infrastructure.web.dto.request.CommentSaveRequest;
 import com.gamemoonchul.domain.status.MemberStatus;
 import com.gamemoonchul.domain.status.PostStatus;
@@ -12,6 +15,7 @@ import com.gamemoonchul.infrastructure.repository.CommentRepository;
 import com.gamemoonchul.infrastructure.repository.MemberRepository;
 import com.gamemoonchul.infrastructure.repository.PostRepository;
 import com.gamemoonchul.infrastructure.web.dto.request.CommentFixRequest;
+import com.gamemoonchul.infrastructure.web.dto.response.PostMainPageResponse;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +56,10 @@ class CommentServiceTest extends TestDataBase {
 
         // when
         Comment savedEntity = commentService.save(request, member);
-        Post searchedPost = postRepository.findById(post.getId())
-            .orElseThrow(
-                () -> new NotFoundException(PostStatus.POST_NOT_FOUND)
-            );
+        Integer savedCommentCount = commentRepository.countByPostId(post.getId());
 
         // then
-        assertThat(searchedPost.getCommentCount()).isEqualTo(post.getCommentCount() + 1);
+        assertThat(savedCommentCount).isEqualTo(post.getCommentCount() + 1);
         assertThat(savedEntity.getContent()).isEqualTo(request.content());
         assertThat(savedEntity.getPost()
             .getId()).isEqualTo(request.postId());
@@ -160,22 +161,19 @@ class CommentServiceTest extends TestDataBase {
 
     @Test
     @DisplayName("댓글 삭제시 Comment Count가 감소하는지 테스트")
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    void shouldDecreaseCommentCountWhenCommentIsDeleted() throws InterruptedException {
+    void shouldDecreaseCommentCountWhenCommentIsDeleted() {
         // given
         CommentSaveRequest request = CommentDummy.createSaveDto(post.getId());
         Comment savedComment = commentService.save(request, member);
-        post = postRepository.findById(post.getId())
-            .orElseThrow();
+        Integer originCount = commentRepository.countByPostId(post.getId());
 
         // when
         commentService.delete(savedComment.getId(), member.getId());
         em.clear();
-        Post post2 = postRepository.findById(post.getId())
-            .orElseThrow();
+        Integer currentCommentCount = commentRepository.countByPostId(post.getId());
 
         // then
-        assertThat(post.getCommentCount() - 1).isEqualTo(post2.getCommentCount());
+        assertThat(currentCommentCount).isEqualTo(originCount - 1);
     }
 
     @Test
