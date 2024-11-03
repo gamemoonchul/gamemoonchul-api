@@ -29,20 +29,12 @@ import java.util.stream.Collectors;
 public class PostOpenApiService {
     private final PostRepository postRepository;
     private final CommentService commentService;
-    private final RedisPostDetailRepository redisPostDetailRepository;
 
     public RedisPostDetail getPostDetails(Long postId, Long requestMemberId) {
-        Optional<RedisPostDetail> optionalPostDetail = redisPostDetailRepository.findRedisPostDetailById(postId);
-        RedisPostDetail redisPostDetail;
+        Post post = postRepository.searchByPostId(postId).orElseThrow(() -> new BadRequestException(PostStatus.POST_NOT_FOUND));
+        post.viewCountUp();
 
-        if (optionalPostDetail.isEmpty()) {
-            Post post = postRepository.searchByPostId(postId).orElseThrow(() -> new BadRequestException(PostStatus.POST_NOT_FOUND));
-            post.viewCountUp();
-
-            redisPostDetail = redisPostDetailRepository.save(PostConverter.toCache(post));
-        } else {
-            redisPostDetail = optionalPostDetail.get();
-        }
+        RedisPostDetail redisPostDetail = PostConverter.toCache(post);
 
         List<CommentResponse> comments = commentService.searchByPostId(redisPostDetail.getId(), requestMemberId).stream()
             .map(CommentConverter::toResponse).toList(); // 변경 자주 일어남, 캐싱 X

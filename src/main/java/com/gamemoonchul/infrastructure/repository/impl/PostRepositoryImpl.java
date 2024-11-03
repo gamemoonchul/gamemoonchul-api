@@ -7,6 +7,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,7 @@ public class PostRepositoryImpl implements PostRepositoryIfs {
     }
 
     @Override
+    @Cacheable(value = "post", key = "#postId", cacheManager = "postCacheManager")
     public Optional<Post> searchByPostId(Long postId) {
         Optional<Post> result = Optional.ofNullable(queryFactory.selectFrom(post)
             .join(post.member, member).fetchJoin()
