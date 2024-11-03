@@ -1,11 +1,16 @@
 package com.gamemoonchul.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.gamemoonchul.application.converter.JsonStringListConverter;
 import com.gamemoonchul.domain.entity.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +25,7 @@ import java.util.List;
     @Index(name = "idx_view_count", columnList = "view_count DESC"),
     @Index(name = "idx_member_id", columnList = "member_id")
 })
-public class Post extends BaseTimeEntity {
+public class Post extends BaseTimeEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,9 +34,11 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VoteOptions> voteOptions;
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
@@ -86,6 +93,7 @@ public class Post extends BaseTimeEntity {
         this.voteOptions.addAll(voteOptions);
     }
 
+    @JsonIgnore
     public Double getMinVoteRatio() {
         int totalVoteCount = voteOptions.stream()
             .mapToInt(voteOption -> voteOption.getVotes()

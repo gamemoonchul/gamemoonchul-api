@@ -1,5 +1,12 @@
 package com.gamemoonchul.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.gamemoonchul.config.oauth.user.OAuth2Provider;
 import com.gamemoonchul.domain.entity.base.BaseTimeEntity;
 import com.gamemoonchul.domain.enums.MemberRole;
@@ -20,8 +27,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "member", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "nickname"
-        ), @UniqueConstraint(columnNames = {"provider", "identifier"})
+    @UniqueConstraint(columnNames = "nickname"
+    ), @UniqueConstraint(columnNames = {"provider", "identifier"})
 })
 public class Member extends BaseTimeEntity {
     @Id
@@ -54,11 +61,15 @@ public class Member extends BaseTimeEntity {
 
     @Setter
     @Column(name = "privacy_agreed_at")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime privacyAgreedAt;
 
     @Column(nullable = false)
     private Double score;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime birth;
 
     @Enumerated(EnumType.STRING)
@@ -66,6 +77,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "varchar(255)")
     private MemberRole role;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 
@@ -89,6 +101,7 @@ public class Member extends BaseTimeEntity {
         return this;
     }
 
+    @JsonIgnore
     public String getRoleKey() {
         return this.role.getKey();
     }

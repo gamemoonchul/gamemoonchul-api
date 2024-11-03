@@ -1,5 +1,6 @@
 package com.gamemoonchul.domain.entity.riot;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +33,7 @@ public class MatchGame {
     @Column(name = "game_mode")
     private String gameMode;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "matchGame", fetch = FetchType.EAGER)
     private List<MatchUser> matchUsers;
 

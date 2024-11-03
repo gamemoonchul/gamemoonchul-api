@@ -1,6 +1,7 @@
 package com.gamemoonchul.domain.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gamemoonchul.domain.entity.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(nullable = false, name = "member_id")
     private Member member;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "post_id")
     private Post post;

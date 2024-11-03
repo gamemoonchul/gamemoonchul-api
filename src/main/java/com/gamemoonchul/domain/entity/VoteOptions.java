@@ -1,5 +1,6 @@
 package com.gamemoonchul.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gamemoonchul.domain.entity.riot.MatchUser;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +20,8 @@ public class VoteOptions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
