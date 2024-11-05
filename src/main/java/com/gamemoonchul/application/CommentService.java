@@ -1,5 +1,6 @@
 package com.gamemoonchul.application;
 
+import com.gamemoonchul.common.constants.RedisKeyConstant;
 import com.gamemoonchul.common.exception.BadRequestException;
 import com.gamemoonchul.common.exception.NotFoundException;
 import com.gamemoonchul.common.exception.UnauthorizedException;
@@ -14,13 +15,11 @@ import com.gamemoonchul.infrastructure.repository.PostRepository;
 import com.gamemoonchul.infrastructure.web.dto.request.CommentFixRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.StaleObjectStateException;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.List;
 
 @Slf4j
@@ -30,6 +29,7 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final RedisTemplate<String, Integer> redisTemplate;
 
     public List<Comment> searchByPostId(Long postId, Long requestMemberId) {
         return commentRepository.searchByPostId(postId, requestMemberId);
@@ -38,17 +38,6 @@ public class CommentService {
     /**
      * 테스트를 하기 위해서 실제 Post, Member가 객체맵핑 되있어야 합니다.
      */
-    @Retryable(
-        retryFor = {
-            StaleObjectStateException.class,
-            ObjectOptimisticLockingFailureException.class},
-        maxAttempts = 5, // 최대 시도 횟수
-        backoff = @Backoff(
-            delay = 0,
-            random = true,
-            maxDelay = 10000
-        ) // 재시도 간의 대기 시간 (1000ms)
-    )
     public Comment save(CommentSaveRequest request, Member member) {
         validatePostNotReplied(request);
         Post post = postRepository.findById(request.postId())
@@ -60,7 +49,10 @@ public class CommentService {
             .content(request.content())
             .build();
 
-        post.commentCountUp();
+        String redisKey = RedisKeyConstant.postCountKey(post.getId());
+        setIfAbsentCount(redisKey, post.getId());
+        redisTemplate.opsForValue().increment(redisKey);
+
         postRepository.save(post);
 
         return commentRepository.save(comment);
@@ -94,14 +86,31 @@ public class CommentService {
 
     public void delete(Long commentId, Long requestMemberId) {
         Comment savedComment = this.searchComment(commentId);
-        validateSameMemberId(savedComment.getMember(), requestMemberId);
+        Long postId = savedComment.getPost().getId();
+        String redisKey = RedisKeyConstant.postCountKey(savedComment.getPost().getId());
 
+        validateSameMemberId(savedComment.getMember(), requestMemberId);
+        setIfAbsentCount(redisKey, postId);
+        deleteChildComments(savedComment, redisKey);
+
+        redisTemplate.opsForValue().decrement(redisKey);
+        commentRepository.delete(savedComment);
+    }
+
+    private void deleteChildComments(Comment savedComment, String redisKey) {
         if (!savedComment.parentExist()) { // 대댓글이 아닐경우 자기 자신의 대댓글들 삭제
             List<Comment> children = commentRepository.findByParentId(savedComment.getId());
             commentRepository.deleteAll(children);
+            redisTemplate.opsForValue().decrement(redisKey, children.size());
         }
-        commentCountDown(savedComment.getPost());
-        commentRepository.delete(savedComment);
+    }
+
+    private void setIfAbsentCount(String redisKey, Long postId) {
+        // 해당 키에 대한 캐시가 없다면
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(redisKey))) { // equals는 Nullsafe하게 비교 가능
+            Integer count = commentRepository.countByPostId(postId);
+            redisTemplate.opsForValue().setIfAbsent(redisKey, count, Duration.ofMinutes(30));
+        }
     }
 
     /**
@@ -111,11 +120,6 @@ public class CommentService {
         Comment comment = commentRepository.findByIdForUpdate(commentId)
             .orElseThrow(() -> new NotFoundException(PostStatus.COMMENT_NOT_FOUND));
         return comment;
-    }
-
-    private void commentCountDown(Post post) {
-        post.commentCountDown();
-        postRepository.save(post);
     }
 
     private void validateSameMemberId(Member commentWriteMember, Long requestMemberId) {

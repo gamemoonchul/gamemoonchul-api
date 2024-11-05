@@ -13,7 +13,7 @@ public record PostMainPageResponse(
     String title,
     String content,
     String timesAgo,
-    Long viewCount,
+    Integer commentCount,
     List<Double> voteRatio
 ) {
 

@@ -25,10 +25,7 @@ public class PostBanApiController {
     public List<PostMainPageResponse> getBannedPosts(
         @MemberSession Member member
     ) {
-        return postBanService.bannedPost(member.getId()).stream()
-            .map(PostBan::getBanPost)
-            .map(PostConverter::entityToResponse)
-            .toList();
+        return postBanService.bannedPostList(member.getId());
     }
 
     @PostMapping("/ban/{postId}")

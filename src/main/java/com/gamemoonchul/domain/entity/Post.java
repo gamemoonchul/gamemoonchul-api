@@ -74,14 +74,6 @@ public class Post extends BaseTimeEntity implements Serializable {
     @Version
     private Integer version;
 
-    public void commentCountDown() {
-        this.commentCount--;
-    }
-
-    public void commentCountUp() {
-        this.commentCount++;
-    }
-
     public void viewCountUp() {
         this.viewCount++;
     }
