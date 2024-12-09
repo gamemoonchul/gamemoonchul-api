@@ -3,6 +3,7 @@ name: CD with Gradle
 on:
   push:
     branches: [ "develop" ]
+  workflow_dispatch:
 
 permissions:
   contents: read
