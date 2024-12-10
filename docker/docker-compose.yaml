@@ -44,11 +44,3 @@ services:
           cpus: '4'
           memory: 8g
 
-  grafana:
-    image: bitnami/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=df159357
