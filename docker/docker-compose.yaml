@@ -1,0 +1,52 @@
+services:
+  gm-db:
+    image: mysql:8.4.3
+    environment:
+      MYSQL_ROOT_PASSWORD: df159357
+      MYSQL_DATABASE: gamemuncheol
+    ports:
+      - "3306:3306"
+
+  gm-redis:
+    image: redis:latest
+    container_name: main-redis
+    environment:
+      REDIS_PASSWORD: df159357
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/gm-redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+
+  gm-be:
+    depends_on:
+      - gm-db
+      - gm-redis
+    image: gm-local
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - ../.env
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - TZ=Asia/Seoul
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4g
+        reservations:
+          cpus: '2'
+          memory: 4g
+
+  grafana:
+    image: bitnami/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=df159357
