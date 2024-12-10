@@ -1,5 +1,7 @@
 services:
   gm-db:
+    networks:
+      - gm-network
     image: mysql:8.4.3
     environment:
       MYSQL_ROOT_PASSWORD: df159357
@@ -8,6 +10,8 @@ services:
       - "3306:3306"
 
   gm-redis:
+    networks:
+      - gm-network
     image: redis:latest
     container_name: main-redis
     environment:
@@ -19,6 +23,8 @@ services:
     command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
 
   gm-be:
+    networks:
+      - gm-network
     depends_on:
       - gm-db
       - gm-redis
@@ -44,3 +50,6 @@ services:
           cpus: '4'
           memory: 8g
 
+networks:
+  gm-network:
+    driver: bridge
