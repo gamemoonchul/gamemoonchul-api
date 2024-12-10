@@ -1,4 +1,3 @@
 # /bin/zsh
-pwd
 ./gradlew clean build -x test --warning-mode all
-sudo docker compose up -d
+cd ./docker && sudo docker compose up -d --build && pwd

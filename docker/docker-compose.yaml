@@ -24,8 +24,10 @@ services:
       - gm-redis
     image: gm-local
     build:
-      context: .
-      dockerfile: ./Dockerfile
+      # 상위 경로를 지정해줘야 Dockerfile에서 상위 경로의 파일을 참조할 수 있다.
+      # 예를 들어서 Context를 .으로 하고 Dockerfile에서 ../build/libs 이런식으로는 접근이 불가능하다.
+      context: ..
+      dockerfile: ./docker/Dockerfile
     env_file:
       - ../.env
     ports:
@@ -36,11 +38,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 4g
+          cpus: '4'
+          memory: 8g
         reservations:
-          cpus: '2'
-          memory: 4g
+          cpus: '4'
+          memory: 8g
 
   grafana:
     image: bitnami/grafana:latest
