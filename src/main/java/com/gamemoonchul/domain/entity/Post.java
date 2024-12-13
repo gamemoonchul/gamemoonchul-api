@@ -9,6 +9,7 @@ import com.gamemoonchul.domain.entity.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.BatchSize;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,10 +35,12 @@ public class Post extends BaseTimeEntity implements Serializable {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @BatchSize(size = 2)
     @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VoteOptions> voteOptions;
 
+    @BatchSize(size = 50)
     @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
