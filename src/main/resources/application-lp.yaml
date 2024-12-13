@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 40
+      minimum-idle: 10
+      idle-timeout: 30000
+      max-lifetime: 1800000
+
+  task:
+    execution:
+      pool:
+        core-size: 8
+        max-size: 32
+        queue-capacity: 100
+
+server:
+  tomcat:
+    threads:
+      max: 50 # 최대 동시 요청 수 (CPU 코어 수 × 2~4로 계산)
+      min-spare: 15 # 최소 유지 스레드 수 (max의 30% 수준)
+    max-connections: 500 # 최대 동시 연결 수
+    accept-count: 200 # 대기 중인 연결 큐의 최대 크기
+    connection-timeout: 60000 # 클라이언트 연결 대기 시간 (60초)

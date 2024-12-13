@@ -22,8 +22,8 @@ lol:
 spring:
   profiles:
     include:
-      - prod
-      - perf
+      - dev
+      - lp
   servlet:
     multipart:
       enabled: true
@@ -99,5 +99,3 @@ management:
 logging:
   level:
     root: info
-
-
