@@ -50,6 +50,25 @@ services:
           cpus: '4'
           memory: 8g
 
+  grafana:
+    networks:
+      - gm-network
+    image: bitnami/grafana:latest
+    container_name: grafana
+    ports:
+      - "4885:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=df159357
+
+  prometheus:
+    networks:
+      - gm-network
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
+
 networks:
   gm-network:
     driver: bridge
