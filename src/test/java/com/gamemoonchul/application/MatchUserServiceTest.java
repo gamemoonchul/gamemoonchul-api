@@ -44,7 +44,7 @@ class MatchUserServiceTest extends TestDataBase {
         // given // when // then
         assertEquals(participants.size(), matchUsers.size());
         assertEquals(matchUsers.get(0)
-                .getMatchGame()
+                .getMatchGameId()
                 .getGameId(), gameEntity.getGameId());
     }
 
@@ -58,7 +58,7 @@ class MatchUserServiceTest extends TestDataBase {
         assertEquals(matchUsers.get(0)
                 .getNickname(), searchedUser.getNickname());
         assertEquals(matchUsers.get(0)
-                .getMatchGame(), searchedUser.getMatchGame());
+                .getMatchGameId(), searchedUser.getMatchGameId());
         assertEquals(matchUsers.get(0)
                 .getPuuid(), searchedUser.getPuuid());
     }

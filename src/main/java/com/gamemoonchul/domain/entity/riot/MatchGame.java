@@ -37,7 +37,8 @@ public class MatchGame {
     private String gameMode;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "matchGame", fetch = FetchType.EAGER)
+    @OneToMany
+    @JoinColumn(name = "game_id", referencedColumnName = "game_id")
     private List<MatchUser> matchUsers;
 
     public void addMatchUser(MatchUser matchUser) {
