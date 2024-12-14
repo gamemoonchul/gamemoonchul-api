@@ -11,8 +11,11 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "match_game", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"game_id"})
-})
+    @UniqueConstraint(columnNames = {"game_id"})
+},
+    indexes = {
+        @Index(name = "idx_match_game_game_id", columnList = "game_id")}
+)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MatchGame {

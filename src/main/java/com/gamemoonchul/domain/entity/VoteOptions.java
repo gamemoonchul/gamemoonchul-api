@@ -15,6 +15,10 @@ import java.util.List;
 @Entity(name = "vote_option")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "vote_option",
+    indexes = {
+        @Index(name = "idx_post_id", columnList = "post_id"),
+    })
 public class VoteOptions {
     @BatchSize(size = 50)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "voteOption", cascade = CascadeType.ALL, orphanRemoval = true)
