@@ -34,14 +34,9 @@ public class PostOpenApiService {
 
     public RedisPostDetail getPostDetails(Long postId, Long requestMemberId) {
         Post post = postRepository.searchByPostId(postId).orElseThrow(() -> new BadRequestException(PostStatus.POST_NOT_FOUND));
-        post.viewCountUp();
 
-        List<CommentResponse> comments = commentRepository.searchByPostId(postId, requestMemberId).stream()
-            .map(CommentConverter::toResponse).toList(); // 변경 자주 일어남, 캐싱 X
-
-        RedisPostDetail redisPostDetail = PostConverter.toCache(post, (long) comments.size());
-
-        redisPostDetail.setComments(comments);
+        // DTO 대신 사용하고 있는데 이름 바꾸기 귀찮음
+        RedisPostDetail redisPostDetail = PostConverter.toCache(post, (long) post.getComments().size());
 
         return redisPostDetail;
     }
