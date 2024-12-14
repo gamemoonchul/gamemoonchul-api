@@ -25,7 +25,7 @@ public class MatchUserRepositoryImpl implements MatchUserRepositoryIfs {
                 .select(matchUser)
                 .from(matchUser)
                 .join(matchGame)
-                .on(matchUser.matchGame.id.eq(matchGame.id))
+                .on(matchGame.gameId.eq(matchUser.matchGameId))
                 .fetchJoin()
                 .where(matchGame.id.eq(gameId))
                 .fetch();

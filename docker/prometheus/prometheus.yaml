@@ -8,4 +8,4 @@ scrape_configs:
   - job_name: 'server-1'
     metrics_path: "/actuator/prometheus"
     static_configs:
-      - targets: ['192.168.1.12:8081']
+      - targets: ['gm-be:8080']

@@ -12,10 +12,10 @@ public class MatchUserConverter {
         MatchUser entity = MatchUser.builder()
                 .puuid(participant.puuid())
                 .win(participant.win())
+                .matchGameId(matchGame.getGameId())
                 .nickname(getNickname(participant))
                 .championName(participant.championName())
                 .build();
-        entity.setMatchGame(matchGame);
         return entity;
     }
 

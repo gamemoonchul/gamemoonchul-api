@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "vote")
+@Table(name = "vote", indexes = {
+    @Index(name = "idx_vote_options_id", columnList = "vote_options_id"),
+})
 @Getter
 @SuperBuilder
 @AllArgsConstructor

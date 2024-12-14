@@ -15,6 +15,10 @@ import java.util.List;
 @Entity(name = "vote_option")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "vote_option",
+    indexes = {
+        @Index(name = "idx_post_id", columnList = "post_id"),
+    })
 public class VoteOptions {
     @BatchSize(size = 50)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "voteOption", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -27,7 +31,7 @@ public class VoteOptions {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "match_user_id")
     private MatchUser matchUser;
 

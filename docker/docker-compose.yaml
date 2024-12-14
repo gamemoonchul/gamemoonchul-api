@@ -64,6 +64,8 @@ services:
   prometheus:
     networks:
       - gm-network
+    ports:
+      - "9090:9090"
     image: prom/prometheus:latest
     container_name: prometheus
     volumes:

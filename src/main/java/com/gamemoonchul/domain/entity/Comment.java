@@ -16,6 +16,10 @@ import lombok.experimental.SuperBuilder;
 @Entity(name = "comment")
 @Getter
 @Setter
+@Table(indexes = {
+    @Index(name = "idx_member_id", columnList = "member_id"),
+    @Index(name = "idx_post_id", columnList = "post_id"),
+})
 public class Comment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
