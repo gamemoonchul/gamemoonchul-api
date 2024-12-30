@@ -1,9 +1,34 @@
 ## 💁‍♂️ Introduce 
+
 한문철 변호사님의 유튜브를 모티브로 하여 **게임 유저들간의 분쟁 조정을 위한 SNS 서비스** 입니다.
+
+<details>
+<summary>🎨 Design</summary>
+
+- 메인 화면 
+
+<img src="./img/main.png" width="75%" />
+
+- 회원가입 화면 
+
+<img src="./img/signup.png" width="75%" />
+
+- 게시물 업로드 화면
+
+<img src="./img/post-upload.png" width="75%" />
+
+- 게시물 상세 화면
+
+<img src="./img/post-detail-page.png" width="75%" />
+  
+</details>
+
 ## 🏢 Architecture
 
 ![](./img/infra-architecture.png)
+
 ## 📚 로컬에서 실행하는 방법
+
 - root 폴더에 .env 생성 아래 **YOUR_로 시작하는 항목들을 전부 적절한 값으로 대체**하시기 바랍니다.
 
 ```console
