@@ -6,6 +6,59 @@
 
 ![](./img/infra-architecture.png)
 
+## 💼 Portfolio 
+
+### 🛠️ ErrorFix
+
+#### OneToOne Lazy Loading 오류 해결 (불필요 쿼리 삭제)
+
+<details>
+<summary>- 상세보기</summary>
+
+- 원인
+  - **OneToOne 연관관계 Lazy Loading 문제**: 
+    - `MatchUser` 엔티티에서 `MatchGame`과 `ManyToOne` 관계로 매핑되어 있음.
+    - `VoteOptions`가 `MatchUser`와 `OneToOne`으로 매핑되어 있으며, `MatchGame`은 `ManyToOne`으로 연관되어 있음.
+    - Hibernate에서 연관관계의 주인이 아닌 곳에서는 **Lazy Loading이 동작하지 않을 가능성**이 있음.
+  - 이로 인해 `MatchGame` 데이터를 사용하는 곳이 없음에도 **불필요한 쿼리**가 실행됨.
+- 분석 과정
+1. **문제 상황 재현**:
+   - `Post -> VoteOptions -> MatchUser -> MatchGame`으로 이어지는 관계에서 쿼리가 과도하게 실행됨을 확인.
+   - 디버깅 중 `MatchGame` 관련 데이터 조회가 발생하지만 실제로 데이터가 사용되지 않음.
+2. **디버깅 시도**:
+   - `Getter`와 `Constructor`를 직접 정의하고, 해당 메서드에 브레이크포인트 설정.
+   - 하지만 Stack Trace를 타고 올라가도 **`createQuery` 호출 조건**을 특정할 수 없었음.
+   - 원인을 정확히 추적하지 못했지만, `Lazy Loading`과 관련된 문제로 추정.
+3. **문제의 본질 파악**:
+   - OneToOne 연관관계에서 주인이 아닌 곳에서는 Lazy Loading이 동작하지 않을 수 있다는 Hibernate 문서를 참조.
+   - `MatchUser`에서 `MatchGame`의 불필요한 연관관계로 인해 데이터 조회가 발생한 것으로 결론.
+- 결과
+  - **해결책**:
+    - `MatchUser`와 `MatchGame` 간의 **연관관계를 제거**.
+    - 이를 통해 `MatchGame`에 대한 불필요한 쿼리 실행 방지.
+
+  - **쿼리 변화**:
+    - 기존에 실행되던 쿼리:
+      ```sql
+      select mu1_0.game_id, mu1_0.id, mu1_0.champion_name, mu1_0.nickname, mu1_0.puuid, mu1_0.win
+      from match_user mu1_0
+      where mu1_0.game_id = 'KR_7356095596';
+      ```
+    - 해결 후 불필요한 쿼리가 더 이상 실행되지 않음.
+
+  - **성능 개선**:
+    - 해결 전:
+      - **TPS**: 1895
+      - **응답 속도**: 530ms
+    - 해결 후:
+      - **TPS**: 2321
+      - **응답 속도**: 433ms
+    - **개선 결과**:
+      - TPS: **426 증가** (약 22.5% 개선)
+      - 응답 속도: **97ms 감소** (약 18.3% 개선)
+
+</details>
+
 ## 🎨 Design
 
 <details>
