@@ -2,6 +2,10 @@
 
 한문철 변호사님의 유튜브를 모티브로 하여 **게임 유저들간의 분쟁 조정을 위한 SNS 서비스** 입니다.
 
+## 🏢 Architecture
+
+![](./img/infra-architecture.png)
+
 ## 🎨 Design
 
 <details>
@@ -24,10 +28,6 @@
 <img src="./img/post-detail-page.png" width="100%" />
   
 </details>
-
-## 🏢 Architecture
-
-![](./img/infra-architecture.png)
 
 ## 📚 로컬에서 실행하는 방법
 
