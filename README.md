@@ -10,7 +10,7 @@
 
 ### ⚡️ Optimization
 
-#### [성능개선] 쿼리 분석과 캐싱 적용을 통한 조회 성능 개선
+#### [성능개선] 쿼리 분석과 캐싱 적용을 통한 메인 페이지 조회 성능 개선
 
 - UML
 
@@ -167,7 +167,7 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
 
 ### ☠️ Challenging Implementation
 
-#### Spring Security에서 발생하는 에러 Customizing 
+#### [구현] Spring Security에서 발생하는 에러 Customizing 
 
 - 문제
   - **Spring Security에서 발생하는 예외가 RestControllerAdvice에서 처리되지 않는 문제**
@@ -196,7 +196,7 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
     - 예외 상황(만료된 토큰, 잘못된 시그니처, 권한 부족 등)에 대해 적절한 HTTP 응답 코드와 JSON 메시지를 반환.
   - **Spring Security와 Spring MVC 간의 Exception Handling 차이를 이해하고 적절한 해결책을 적용**.
 
-#### 리소스가 적은 OAuth Client Apple Login 구현 
+#### [구현] 리소스가 적은 OAuth Client Apple Login 구현 
 
 - 문제
   - **App Store 정책에 따른 Apple 로그인 구현 요구**
@@ -225,7 +225,7 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
 
 ### 🛠️ ErrorFix
 
-#### OneToOne Lazy Loading 오류 해결 (불필요 쿼리 삭제)
+#### [수정] OneToOne Lazy Loading 오류 해결 (불필요 쿼리 삭제)
 
 <details>
 <summary>상세보기</summary>
