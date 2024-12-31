@@ -41,6 +41,7 @@
 
 1. Spring AOP를 이용해서 유저 정보를 가져오는 Annotation을 만들어서 공통화.
 2. MemberSession Annotation & Resolver 생성
+
 ```java
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
@@ -166,6 +167,7 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
     - **개선 결과**:
       - TPS: **426 증가** (약 22.5% 개선)
       - 응답 속도: **97ms 감소** (약 18.3% 개선)
+    - <img src="./img/remove-lazy-loading.png" width="75%">
 
 </details>
 
