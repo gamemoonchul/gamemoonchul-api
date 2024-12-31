@@ -13,7 +13,7 @@
 #### OneToOne Lazy Loading 오류 해결 (불필요 쿼리 삭제)
 
 <details>
-<summary>- 상세보기</summary>
+<summary>상세보기</summary>
 
 - 원인
   - **OneToOne 연관관계 Lazy Loading 문제**: 
