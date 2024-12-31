@@ -178,7 +178,7 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
 - 해결과정
 1. **문제 원인 분석 및 초기 시도**
    - 다양한 자료를 참고하여 AuthenticationEntryPoint와 Custom AuthenticationException을 정의해 예외 처리 방식을 적용.
-   - [당시 참고했던 문서](https://stackoverflow.com/questions/19767267/handle-spring-security-authentication-exceptions-with-exceptionhandler)
+   - [당시 참고했던 사이트](https://stackoverflow.com/questions/19767267/handle-spring-security-authentication-exceptions-with-exceptionhandler)
    - 디버깅 과정:
      - Custom AuthenticationException이 **AuthenticationEntryPoint**에서 정상적으로 처리되지 않음.
      - 장시간 디버깅을 통해도 원인 파악이 어려움.
