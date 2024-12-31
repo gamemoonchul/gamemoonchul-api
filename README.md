@@ -8,6 +8,116 @@
 
 ## 💼 Portfolio 
 
+### ⚡️ Optimization
+
+#### [코드 공통화] AOP를 이용한 유저 인증 정보 로직 공통화 
+
+- 원인
+  - JWT Token에서 User의 정보를 꺼내오는 로직 중복 발생.
+
+```java
+    @PostMapping
+    public void saveComment(@RequestBody CommentRequest request, HttpServletRequest httpServletRequest) {
+        // 토큰 추출 및 검증
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null || token.isEmpty()) {
+            throw new UnauthorizedException("Authorization token is missing");
+        }
+
+        // 토큰에서 정보 추출
+        TokenInfo tokenInfo = extractTokenInfo(token);
+
+        // 멤버 조회
+        Member member = memberRepository.findById(tokenInfo.id())
+            .orElseThrow(() -> new BadRequestException("Member not found"));
+
+        // 비즈니스 로직 호출
+        CommentSaveRequest saveDto = new CommentSaveRequest(null, request.content(), request.postId());
+        commentService.save(saveDto, member);
+    }
+```
+
+- 해결과정
+  - Spring AOP를 이용해서 유저 정보를 가져오는 Annotation을 만들어서 공통화.
+  - MemberSession Annotation & Resolver 생성
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+@Parameter(hidden = true)
+public @interface MemberSession {
+}
+```
+
+<details> 
+<summary>MemberSessionResolver 상세 보기</summary>
+
+```java
+@Component
+@RequiredArgsConstructor
+public class MemberSessionResolver implements HandlerMethodArgumentResolver {
+    private final MemberRepository memberRepository;
+
+    @Override
+    // 여기서 True로 return이 되면 resolveArgument가 실행됨
+    public boolean supportsParameter(MethodParameter parameter) {
+        // 지원하는 파라미터 체크, 어노테이션 체크하는 영역
+        // 1. 어노테이션이 있는지 체크
+        var annotation = parameter.hasParameterAnnotation(MemberSession.class);
+        // 2. parameter type 체크
+        boolean parameterType = parameter.getParameterType()
+            .equals(Member.class);
+
+        return annotation && parameterType;
+    }
+
+    @Override
+    @Nullable
+    public Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
+        return getTokenInfo()
+            .map(this::findMember)
+            .orElse(null);
+    }
+
+    private Optional<TokenInfo> getTokenInfo() {
+        return Optional.ofNullable(RequestContextHolder.getRequestAttributes())
+            .map(attributes -> (TokenInfo) attributes.getAttribute("tokenInfo", RequestAttributes.SCOPE_REQUEST));
+    }
+
+    private Member findMember(TokenInfo tokenInfo) {
+        return memberRepository.findById(
+                tokenInfo.id())
+            .orElseThrow(() -> {
+                return new BadRequestException(MemberStatus.MEMBER_NOT_FOUND);
+            });
+    }
+}
+```
+
+</details>
+
+  - Controller에 적용 
+
+```java
+    @PostMapping
+    public PostDetailResponse upload(
+        @Valid
+        @RequestBody PostUploadRequest request,
+        @MemberSession Member member
+    ) {
+        PostDetailResponse response = postService.upload(request, member);
+        return response;
+    }
+```
+
+- 결과 
+  - 5개의 클래스, 17개의 메서드에서 로직 공통화
+  - <img src="./img/member-session-aop.png" width="50%">
+
+
+
+
 ### 🛠️ ErrorFix
 
 #### OneToOne Lazy Loading 오류 해결 (불필요 쿼리 삭제)
@@ -15,13 +125,13 @@
 <details>
 <summary>상세보기</summary>
 
-- 원인
+- 문제
   - **OneToOne 연관관계 Lazy Loading 문제**: 
     - `MatchUser` 엔티티에서 `MatchGame`과 `ManyToOne` 관계로 매핑되어 있음.
     - `VoteOptions`가 `MatchUser`와 `OneToOne`으로 매핑되어 있으며, `MatchGame`은 `ManyToOne`으로 연관되어 있음.
     - Hibernate에서 연관관계의 주인이 아닌 곳에서는 **Lazy Loading이 동작하지 않을 가능성**이 있음.
   - 이로 인해 `MatchGame` 데이터를 사용하는 곳이 없음에도 **불필요한 쿼리**가 실행됨.
-- 분석 과정
+- 해결과정
 1. **문제 상황 재현**:
    - `Post -> VoteOptions -> MatchUser -> MatchGame`으로 이어지는 관계에서 쿼리가 과도하게 실행됨을 확인.
    - 디버깅 중 `MatchGame` 관련 데이터 조회가 발생하지만 실제로 데이터가 사용되지 않음.
