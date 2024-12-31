@@ -37,10 +37,10 @@
     }
 ```
 
-- 해결과정
-  - Spring AOP를 이용해서 유저 정보를 가져오는 Annotation을 만들어서 공통화.
-  - MemberSession Annotation & Resolver 생성
+- 해결과정 
 
+1. Spring AOP를 이용해서 유저 정보를 가져오는 Annotation을 만들어서 공통화.
+2. MemberSession Annotation & Resolver 생성
 ```java
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
@@ -97,7 +97,7 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
 
 </details>
 
-  - Controller에 적용 
+3. Controller에 적용 
 
 ```java
     @PostMapping
