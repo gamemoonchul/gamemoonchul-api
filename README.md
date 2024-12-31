@@ -196,6 +196,33 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
     - 예외 상황(만료된 토큰, 잘못된 시그니처, 권한 부족 등)에 대해 적절한 HTTP 응답 코드와 JSON 메시지를 반환.
   - **Spring Security와 Spring MVC 간의 Exception Handling 차이를 이해하고 적절한 해결책을 적용**.
 
+#### 리소스가 적은 OAuth Client Apple Login 구현 
+
+- 문제
+  - **App Store 정책에 따른 Apple 로그인 구현 요구**
+    - 외부 OAuth를 사용할 경우 Apple로 로그인을 함께 구현해야 한다는 요구사항.
+    - (현재는 정책이 변경되어 필수 구현 사항이 아님.)
+  - **문서 부족**
+    - OAuth Client 공식 문서와 Apple Developer 공식 문서에는 OAuth Client를 활용한 Apple 로그인 구현에 대한 자료가 부족.
+
+- 해결과정
+1. **Github 자료 분석**
+   - Apple 로그인 구현 사례를 찾기 위해 Github에서 OAuth Client를 활용한 프로젝트를 분석.
+   - Apple 인증 방식이 OAuth가 아닌 **OIDC(OpenID Connect)** 방식으로 동작한다는 점을 확인.
+
+2. **OAuth와 OIDC의 차이점 학습 및 OIDC 구현**
+   - OAuth와 OIDC의 차이점 분석:
+     - OIDC는 OAuth를 확장하여 사용자 인증을 포함한 프로토콜임.
+     - OAuth Client에서는 별도의 Interface를 사용해야 OIDC를 지원할 수 있음.
+   - OAuth Client를 활용해 OIDC 방식으로 Apple 로그인을 구현.
+
+- 결과
+  - **Apple 로그인 구현 성공**
+    - OAuth Client와 OIDC를 조합해 Apple 로그인을 구현.
+  - **기술적 성장**
+    - OAuth와 OIDC의 차이점을 깊이 이해하고, OAuth Client를 활용한 OIDC 구현 방법을 습득.
+    - 제한된 문서 환경에서 자료를 분석하고 문제를 해결하는 경험을 통해 기술적으로 성장.
+
 ### 🛠️ ErrorFix
 
 #### OneToOne Lazy Loading 오류 해결 (불필요 쿼리 삭제)
