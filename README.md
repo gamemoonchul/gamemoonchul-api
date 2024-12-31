@@ -165,8 +165,36 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
   - 5개의 클래스, 17개의 메서드에서 로직 공통화
   - <img src="./img/member-session-aop.png" width="50%">
 
+### ☠️ Challenging Implementation
 
+#### Spring Security에서 발생하는 에러 Customizing 
 
+- 문제
+  - **Spring Security에서 발생하는 예외가 RestControllerAdvice에서 처리되지 않는 문제**
+    - 원인:
+      - Spring Security의 SecurityFilter가 **ServletFilterChain**에서 동작하여, **Spring MVC의 Exception Handling 메커니즘보다 먼저 실행됨**.
+    - 상황:
+      - JWT 인증 과정에서 다양한 예외 상황(만료된 토큰, 잘못된 시그니처, 권한 부족 등)에 대한 적절한 에러 메시지, 에러 코드 반환 필요.
+- 해결과정
+1. **문제 원인 분석 및 초기 시도**
+   - 다양한 자료를 참고하여 AuthenticationEntryPoint와 Custom AuthenticationException을 정의해 예외 처리 방식을 적용.
+   - [당시 참고했던 문서](https://stackoverflow.com/questions/19767267/handle-spring-security-authentication-exceptions-with-exceptionhandler)
+   - 디버깅 과정:
+     - Custom AuthenticationException이 **AuthenticationEntryPoint**에서 정상적으로 처리되지 않음.
+     - 장시간 디버깅을 통해도 원인 파악이 어려움.
+   - 초기 시도가 실패함에 따라 다른 대안을 모색.
+2. **CustomEntry를 이용한 예외 처리 방식 구현**
+   - **HttpServletRequest Attributes**를 활용:
+     - 예외 발생 시 커스텀 상태 코드를 `HttpServletRequest`의 Attributes에 저장.
+   - **CustomEntry로 예외 처리**:
+     - EntryPoint에서 `HttpServletRequest`의 Attributes 값을 추출.
+     - 추출한 상태 코드를 Enum으로 변환.
+     - **Response Writer**를 사용해 ObjectMapping 방식으로 JSON 응답 처리.
+   - 최종적으로 원하는 예외 상황에 맞는 적절한 JSON 응답을 반환할 수 있도록 구현.
+- 결과
+  - **Spring Security에서 발생하는 예외를 Security의 EntryPoint에서 Customize 하는데 성공**.
+    - 예외 상황(만료된 토큰, 잘못된 시그니처, 권한 부족 등)에 대해 적절한 HTTP 응답 코드와 JSON 메시지를 반환.
+  - **Spring Security와 Spring MVC 간의 Exception Handling 차이를 이해하고 적절한 해결책을 적용**.
 
 ### 🛠️ ErrorFix
 
