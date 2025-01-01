@@ -1,16 +1,16 @@
-## 💁‍♂️ Introduce 
+# 💁‍♂️ Introduce 
 
 한문철 변호사님의 유튜브를 모티브로 하여 **게임 유저들간의 분쟁 조정을 위한 SNS 서비스** 입니다.
 
-## 🏢 Architecture
+# 🏢 Architecture
 
 ![](./img/infra-architecture.png)
 
-## 💼 Portfolio 
+# 💼 Portfolio 
 
-### ⚡️ Optimization
+## ⚡️ Optimization
 
-#### [성능개선] Redis를 활용한 댓글 개수 동시성 문제 해결
+### [성능개선] Redis를 활용한 댓글 개수 동시성 문제 해결
 
 - UML
 
@@ -67,7 +67,7 @@
 </details>
 
 
-#### [성능개선] 쿼리 분석과 캐싱 적용을 통한 메인 페이지 조회 성능 개선
+### [성능개선] 쿼리 분석과 캐싱 적용을 통한 메인 페이지 조회 성능 개선
 
 - UML
 
@@ -112,7 +112,7 @@
   - **TPS**: 523 → 3390 (TPS **548% 증가**)
   - **평균 응답시간**: 2.64초 → 298ms (**88.7% 감소**)
 
-#### [코드 공통화] AOP를 이용한 유저 인증 정보 로직 공통화 
+### [코드 공통화] AOP를 이용한 유저 인증 정보 로직 공통화 
 
 - 원인
   - JWT Token에서 User의 정보를 꺼내오는 로직 중복 발생.
@@ -218,9 +218,9 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
   - 5개의 클래스, 17개의 메서드에서 로직 공통화
   - <img src="./img/member-session-aop.png" width="50%">
 
-### ☠️ Challenging Implementation
+## ☠️ Challenging Implementation
 
-#### [구현] Spring Security에서 발생하는 에러 Customizing 
+### [구현] Spring Security에서 발생하는 에러 Customizing 
 
 - 문제
   - **Spring Security에서 발생하는 예외가 RestControllerAdvice에서 처리되지 않는 문제**
@@ -249,7 +249,7 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
     - 예외 상황(만료된 토큰, 잘못된 시그니처, 권한 부족 등)에 대해 적절한 HTTP 응답 코드와 JSON 메시지를 반환.
   - **Spring Security와 Spring MVC 간의 Exception Handling 차이를 이해하고 적절한 해결책을 적용**.
 
-#### [구현] 리소스가 적은 OAuth Client Apple Login 구현 
+### [구현] 리소스가 적은 OAuth Client Apple Login 구현 
 
 - 문제
   - **App Store 정책에 따른 Apple 로그인 구현 요구**
@@ -276,9 +276,9 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
     - OAuth와 OIDC의 차이점을 깊이 이해하고, OAuth Client를 활용한 OIDC 구현 방법을 습득.
     - 제한된 문서 환경에서 자료를 분석하고 문제를 해결하는 경험을 통해 기술적으로 성장.
 
-### 🛠️ ErrorFix
+## 🛠️ ErrorFix
 
-#### [수정] OneToOne Lazy Loading 오류 해결 (불필요 쿼리 삭제)
+### [수정] OneToOne Lazy Loading 오류 해결 (불필요 쿼리 삭제)
 
 <details>
 <summary>상세보기</summary>
@@ -328,7 +328,7 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
 
 </details>
 
-## 🎨 Design
+# 🎨 Design
 
 <details>
 <summary>상세보기</summary>
@@ -351,7 +351,7 @@ public class MemberSessionResolver implements HandlerMethodArgumentResolver {
   
 </details>
 
-## 📚 로컬에서 실행하는 방법
+# 📚 로컬에서 실행하는 방법
 
 - root 폴더에 .env 생성 아래 **YOUR_로 시작하는 항목들을 전부 적절한 값으로 대체**하시기 바랍니다.
 
@@ -383,7 +383,7 @@ REDIS_PW=df159357
 bash local_deploy.sh
 ```
 
-## 🚨 주요 이슈
+# 🚨 주요 이슈
 
 - [디테일 화면 Redis Cache Aside Pattern 적용](https://github.com/gamemuncheol/gamemuncheol-api/issues/155)
 - [낙관락 vs 비관락 성능 비교](https://github.com/gamemuncheol/gamemuncheol-api/issues/192)
