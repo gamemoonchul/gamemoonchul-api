@@ -1,3 +1,21 @@
+# Table of Contents
+
+1. [💁‍♂️ Introduce](#-introduce)
+2. [🏢 Architecture](#-architecture)
+3. [💼 Portfolio](#-portfolio)
+   - [⚡️ Optimization](#️-optimization)
+     - [Redis를 활용한 댓글 개수 동시성 문제 해결](#성능개선-redis를-활용한-댓글-개수-동시성-문제-해결)
+     - [쿼리 분석과 캐싱 적용을 통한 메인 페이지 조회 성능 개선](#성능개선-쿼리-분석과-캐싱-적용을-통한-메인-페이지-조회-성능-개선)
+     - [AOP를 이용한 유저 인증 정보 로직 공통화](#코드-공통화-aop를-이용한-유저-인증-정보-로직-공통화)
+   - [☠️ Challenging Implementation](#️-challenging-implementation)
+     - [Spring Security에서 발생하는 에러 Customizing](#구현-spring-security에서-발생하는-에러-customizing)
+     - [OAuth Client Apple Login 구현](#구현-리소스가-적은-oauth-client-apple-login-구현)
+   - [🛠️ ErrorFix](#️-errorfix)
+     - [OneToOne Lazy Loading 오류 해결](#수정-onetoone-lazy-loading-오류-해결-불필요-쿼리-삭제)
+4. [🎨 Design](#-design)
+5. [📚 로컬에서 실행하는 방법](#-로컬에서-실행하는-방법)
+6. [🚨 주요 이슈](#-주요-이슈)
+
 # 💁‍♂️ Introduce 
 
 한문철 변호사님의 유튜브를 모티브로 하여 **게임 유저들간의 분쟁 조정을 위한 SNS 서비스** 입니다.
